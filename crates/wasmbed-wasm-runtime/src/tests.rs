@@ -25,7 +25,8 @@ async fn test_module_loading() -> WasmResult<()> {
     let mut runtime = WasmRuntime::new(config)?;
     
     // Create a simple WASM module (empty module)
-    let wasm_bytes = include_bytes!("../test_data/empty.wasm");
+    let wasm_bytes = wat::parse_str(include_str!("../test_data/empty.wat")).expect("valid WAT");
+    let wasm_bytes = wasm_bytes.as_slice();
     
     // Load module
     let metadata = runtime.load_module("test-module", wasm_bytes).await?;
@@ -42,7 +43,8 @@ async fn test_instance_creation() -> WasmResult<()> {
     let mut runtime = WasmRuntime::new(config)?;
     
     // Create a simple WASM module
-    let wasm_bytes = include_bytes!("../test_data/empty.wasm");
+    let wasm_bytes = wat::parse_str(include_str!("../test_data/empty.wat")).expect("valid WAT");
+    let wasm_bytes = wasm_bytes.as_slice();
     runtime.load_module("test-module", wasm_bytes).await?;
     
     // Create instance
@@ -63,7 +65,8 @@ async fn test_function_calling() -> WasmResult<()> {
     let mut runtime = WasmRuntime::new(config)?;
     
     // Create a simple WASM module with a function
-    let wasm_bytes = include_bytes!("../test_data/simple.wasm");
+    let wasm_bytes = wat::parse_str(include_str!("../test_data/simple.wat")).expect("valid WAT");
+    let wasm_bytes = wasm_bytes.as_slice();
     runtime.load_module("test-module", wasm_bytes).await?;
     
     // Create instance
@@ -95,7 +98,8 @@ async fn test_runtime_statistics() -> WasmResult<()> {
     assert_eq!(stats.instances_created, 0);
     
     // Load a module
-    let wasm_bytes = include_bytes!("../test_data/empty.wasm");
+    let wasm_bytes = wat::parse_str(include_str!("../test_data/empty.wat")).expect("valid WAT");
+    let wasm_bytes = wasm_bytes.as_slice();
     runtime.load_module("test-module", wasm_bytes).await?;
     
     // Check stats after loading
@@ -192,7 +196,8 @@ async fn test_runtime_shutdown() -> WasmResult<()> {
     let mut runtime = WasmRuntime::new(config)?;
     
     // Load a module and create an instance
-    let wasm_bytes = include_bytes!("../test_data/empty.wasm");
+    let wasm_bytes = wat::parse_str(include_str!("../test_data/empty.wat")).expect("valid WAT");
+    let wasm_bytes = wasm_bytes.as_slice();
     runtime.load_module("test-module", wasm_bytes).await?;
     runtime.create_instance("test-module", None).await?;
     

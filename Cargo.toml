@@ -27,7 +27,7 @@ members = [
 version = "0.0.1"
 edition = "2021"
 rust-version = "1.88.0"
-repository = "https://github.com/lucadagati/k8s-wasm-edge-orchestration"
+repository = "https://github.com/lucadagati/k3s-wasm-edge-orchestration"
 license = "AGPL-3.0"
 
 [workspace.metadata.crane]

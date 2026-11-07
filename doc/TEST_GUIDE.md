@@ -5,7 +5,7 @@ Step-by-step validation of the Kubernetes-native WASM edge orchestration stack.
 All commands assume the repository root:
 
 ```bash
-cd k8s-wasm-edge-orchestration   # or your clone path
+cd k3s-wasm-edge-orchestration   # or your clone path
 ```
 
 ---

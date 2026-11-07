@@ -6,7 +6,7 @@ This document is intended for an AI/software agent that will run the experimenta
 
 Repository under evaluation:
 
-- `https://github.com/lucadagati/k8s-wasm-edge-orchestration`
+- `https://github.com/lucadagati/k3s-wasm-edge-orchestration`
 
 The agent must produce reproducible measurements, raw records, summary tables, plots, and a concise experimental report that can be transferred into the paper. The goal is not only to show that the system works, but to provide reviewer-grade evidence about correctness, reconciliation semantics, latency, stability, and the impact of controller hardening.
 

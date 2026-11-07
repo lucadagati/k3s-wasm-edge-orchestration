@@ -10,6 +10,7 @@ This repository implements a Kubernetes-native platform for deploying and managi
 - [Deployment Locations](#deployment-locations)
 - [Quick Start](#quick-start)
 - [Emulated device networking (TAP + DHCP + routing)](#emulated-device-networking-tap--dhcp--routing)
+- [Build and Verify Without a Cluster](#build-and-verify-without-a-cluster)
 - [Documentation](#documentation)
 - [Components](#components)
 - [Technologies](#technologies)
@@ -296,7 +297,7 @@ This ensures emulated devices are treated identically to physical devices from t
 ## Repository Structure
 
 ```
-k8s-wasm-edge-orchestration/
+k3s-wasm-edge-orchestration/
 ├── crates/                          # Rust workspace components
 │   ├── wasmbed-api-server/          # REST API server and orchestrator
 │   ├── wasmbed-gateway/             # TLS gateway for device communication
@@ -519,8 +520,8 @@ sudo chown $(id -u):$(id -g) ~/.kube/config
 
 2. **Clone Repository**:
 ```bash
-git clone https://github.com/lucadagati/k8s-wasm-edge-orchestration.git
-cd k8s-wasm-edge-orchestration
+git clone https://github.com/lucadagati/k3s-wasm-edge-orchestration.git
+cd k3s-wasm-edge-orchestration
 ```
 
 3. **Deploy System**:
@@ -605,6 +606,23 @@ sudo iptables -A FORWARD -i cni0 -o tap0 -m state --state RELATED,ESTABLISHED -j
 ```
 
 **Summary:** `tap0` is created by Renode at Connect; you give it the address 192.168.1.1/24 and bring it up. dnsmasq provides DHCP on that subnet so the firmware gets an IP; IP forwarding and NAT allow that traffic to reach the Kubernetes pod network (e.g. Gateway at 10.42.0.43). Without this setup, the device stays in "Enrolled" and never reaches "Connected" (no TLS).
+
+## Build and Verify Without a Cluster
+
+Library crates build and test without Kubernetes. Verified in this environment (Rust 1.99, `cargo check/test --locked`):
+
+```bash
+cargo test --locked -p wasmbed-protocol -p wasmbed-wasm-runtime -p wasmbed-types -p wasmbed-cert -p wasmbed-tls-utils
+# expected: all test results "ok" (25 tests in total across these crates)
+```
+
+`cargo check --workspace --locked` on the remaining crates (`wasmbed-tcp-bridge`, `wasmbed-k8s-resource*`, `wasmbed-protocol-tool`, `wasmbed-cert-tool`, `wasmbed-config`, `wasmbed-edge-client`, `wasmbed-test-utils`) compiles with warnings only. The crates that depend on `openssl-sys` (`wasmbed-api-server`, `wasmbed-gateway`, `wasmbed-gateway-controller`, `wasmbed-device-controller`, `wasmbed-application-controller`, `wasmbed-infrastructure`, `wasmbed-qemu-manager`) need `pkg-config` and the OpenSSL development headers (`apt install pkg-config libssl-dev`); they were not built here.
+
+Also verified: all scripts pass `bash -n`, all Python scripts compile, all Kubernetes YAML in `k8s/` and `config/` parses.
+
+Not verified in this environment: the K3s deployment (`scripts/deploy-k3s.sh`), Docker image builds, the React dashboard build, Zephyr firmware, Renode emulation and the experiment campaign (the committed `experiments/` data are the recorded results of a previous run).
+
+Test fixtures: the WASM runtime tests compile the `.wat` files in `crates/wasmbed-wasm-runtime/test_data/` at test time (the `.wasm` binaries are git-ignored).
 
 ## Documentation
 
