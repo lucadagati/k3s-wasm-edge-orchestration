@@ -249,4 +249,4 @@ More in `doc/K3S_DEPLOYMENT.md` and `doc/RENODE_TLS_DEPLOY_VERIFICATION.md`.
 
 ## License
 
-See `LICENSE`.
+GNU AGPL v3, see `LICENSE`.
